@@ -1,80 +1,58 @@
 /* ==========================================================
    PORTAL EMS BRASIL
-   SCRIPT.JS
+   SCRIPT.JS V3
+   PARTE 1/4
 ========================================================== */
 
-document.addEventListener("DOMContentLoaded", function () {
+const buttons = document.querySelectorAll(".timelineButton");
 
-    const preloader = document.getElementById("preloader");
+const frames = document.querySelectorAll(".frame");
 
-    setTimeout(() => {
+const teaser = document.getElementById("teaser");
 
-        preloader.style.opacity = "0";
+const hero = document.getElementById("heroContainer");
 
-        setTimeout(() => {
+const heroTitle = document.getElementById("heroTitle");
 
-            preloader.style.display = "none";
+let opened = [];
 
-        }, 800);
-
-    }, 1800);
-
-});
+let locked = false;
 
 
 
-/* ==========================================================
-   BOTÃO VOLTAR AO TOPO
-========================================================== */
 
-const backButton = document.getElementById("backToTop");
 
-window.addEventListener("scroll", function () {
+buttons.forEach((button)=>{
 
-    if (window.scrollY > 500) {
+button.addEventListener("click",function(){
 
-        backButton.style.display = "block";
+if(locked) return;
 
-    } else {
+const id=parseInt(this.dataset.frame);
 
-        backButton.style.display = "none";
+if(opened.includes(id)) return;
 
-    }
+opened.push(id);
 
-});
+document.querySelector(
 
-backButton.addEventListener("click", function () {
+'.frame0'+id
 
-    window.scrollTo({
+).classList.add("show");
 
-        top: 0,
+this.classList.add("active");
 
-        behavior: "smooth"
+locked=true;
 
-    });
+setTimeout(()=>{
+
+locked=false;
+
+},2500);
+
+checkCompleted();
 
 });
-
-
-/* ==========================================================
-   TIMELINE
-========================================================== */
-
-const timelineItems = document.querySelectorAll(".timeline-item");
-
-timelineItems.forEach((item) => {
-
-    item.addEventListener("mouseenter", () => {
-
-        item.style.transform = "translateY(-8px) scale(1.03)";
-
-    });
-
-    item.addEventListener("mouseleave", () => {
-
-        item.style.transform = "";
-
-    });
 
 });
 
@@ -82,175 +60,273 @@ timelineItems.forEach((item) => {
 
 
 
-/* ==========================================================
-   PORTAL CARDS
-========================================================== */
+function checkCompleted(){
 
-const portalCards = document.querySelectorAll(".portal-card");
+if(opened.length!==8) return;
 
-portalCards.forEach((card) => {
+setTimeout(()=>{
 
-    card.addEventListener("mouseenter", () => {
+startFinalAnimation();
 
-        card.style.transform = "translateY(-10px)";
-
-    });
-
-    card.addEventListener("mouseleave", () => {
-
-        card.style.transform = "";
-
-    });
-
-});
-
-
-
-
-
-/* ==========================================================
-   BOTÃO ENTRAR NO PORTAL
-========================================================== */
-
-const portalButton = document.querySelector(".portal-button");
-
-if (portalButton) {
-
-    portalButton.addEventListener("click", function () {
-
-        console.log("Entrando no Portal EMS Brasil");
-
-    });
+},1200);
 
 }
 
 
 /* ==========================================================
-   MODAIS
+   SCRIPT.JS V3
+   PARTE 2/4
 ========================================================== */
 
-const chapterCards = document.querySelectorAll(".chapter-card");
+function startFinalAnimation(){
 
-chapterCards.forEach((card) => {
+teaser.style.transition="1s";
 
-    card.addEventListener("click", function () {
+teaser.style.opacity="0";
 
-        const modalId = this.dataset.modal;
+setTimeout(()=>{
 
-        const modal = document.getElementById(modalId);
+teaser.style.display="none";
 
-        if (modal) {
+hero.style.display="block";
 
-            modal.classList.add("active");
+setTimeout(()=>{
 
-        }
+heroTitle.classList.add("show");
 
-    });
+startWords();
 
-});
+},1200);
 
-
-
-
-
-const modals = document.querySelectorAll(".modal");
-
-modals.forEach((modal) => {
-
-    modal.addEventListener("click", function (event) {
-
-        if (event.target === modal) {
-
-            modal.classList.remove("active");
-
-        }
-
-    });
-
-});
-
-
-
-
-
-/* ==========================================================
-   FECHAR MODAIS COM ESC
-========================================================== */
-
-document.addEventListener("keydown", function (event) {
-
-    if (event.key === "Escape") {
-
-        modals.forEach((modal) => {
-
-            modal.classList.remove("active");
-
-        });
-
-    }
-
-});
-
-
-
-
-
-/* ==========================================================
-   EFEITO DE ENTRADA
-========================================================== */
-
-const heroContent = document.querySelector(".hero-content");
-
-if (heroContent) {
-
-    heroContent.style.opacity = "0";
-
-    heroContent.style.transform = "translateY(40px)";
-
-    setTimeout(() => {
-
-        heroContent.style.transition = "all .9s ease";
-
-        heroContent.style.opacity = "1";
-
-        heroContent.style.transform = "translateY(0)";
-
-    }, 2000);
+},1000);
 
 }
 
 
+
+
+
+function startWords(){
+
+const words=[
+
+"word01",
+
+"word02",
+
+"word03",
+
+"word04",
+
+"word05",
+
+"word06",
+
+"word07",
+
+"word08"
+
+];
+
+let i=0;
+
+const timer=setInterval(()=>{
+
+if(i>0){
+
+document.getElementById(
+
+words[i-1]
+
+).style.display="none";
+
+}
+
+if(i>=words.length){
+
+clearInterval(timer);
+
+showFinalMessage();
+
+return;
+
+}
+
+document.getElementById(
+
+"finalSequence"
+
+).style.display="flex";
+
+document.getElementById(
+
+words[i]
+
+).style.display="block";
+
+i++;
+
+},1200);
+
+}
+
+
+
 /* ==========================================================
-   ANIMAÇÃO AO ROLAR A PÁGINA
+   SCRIPT.JS V3
+   PARTE 3/4
 ========================================================== */
 
-const observer = new IntersectionObserver((entries) => {
+function showFinalMessage(){
 
-    entries.forEach((entry) => {
+document.getElementById(
 
-        if (entry.isIntersecting) {
+"finalSequence"
 
-            entry.target.classList.add("show");
+).style.display="none";
 
-        }
+document.getElementById(
 
-    });
+"messageFinal"
 
-}, {
+).style.display="flex";
 
-    threshold: 0.15
+}
+
+
+
+
+
+const enterPortal=document.querySelector(
+
+".enterPortal"
+
+);
+
+
+
+
+
+enterPortal.addEventListener("click",function(e){
+
+e.preventDefault();
+
+document.getElementById(
+
+"messageFinal"
+
+).style.display="none";
+
+document.getElementById(
+
+"portal"
+
+).scrollIntoView({
+
+behavior:"smooth"
 
 });
 
-document.querySelectorAll(
+});
 
-    ".chapter-card, .portal-card, .intro-section, .transition-section"
 
-).forEach((element) => {
 
-    element.classList.add("hidden");
 
-    observer.observe(element);
+
+const backTop=document.getElementById(
+
+"backTop"
+
+);
+
+window.addEventListener(
+
+"scroll",
+
+function(){
+
+if(window.scrollY>500){
+
+backTop.style.display="block";
+
+}else{
+
+backTop.style.display="none";
+
+}
+
+}
+
+);
+
+backTop.addEventListener(
+
+"click",
+
+function(){
+
+window.scrollTo({
+
+top:0,
+
+behavior:"smooth"
+
+});
+
+}
+
+);
+
+
+
+/* ==========================================================
+   SCRIPT.JS V3
+   PARTE 4/4
+========================================================== */
+
+/* BOTÕES DESABILITADOS DURANTE A ANIMAÇÃO */
+
+function lockButtons(state){
+
+buttons.forEach((button)=>{
+
+button.disabled=state;
+
+button.style.pointerEvents=state?"none":"auto";
+
+button.style.opacity=state?".55":"1";
+
+});
+
+}
+
+
+
+
+
+/* EFEITO DE REVELAÇÃO */
+
+frames.forEach((frame)=>{
+
+frame.style.opacity="0";
+
+});
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+hero.style.display="none";
+
+document.getElementById(
+
+"finalSequence"
+
+).style.display="none";
+
+document.getElementById(
+
+"messageFinal"
+
+).style.display="none";
 
 });
 
@@ -258,36 +334,21 @@ document.querySelectorAll(
 
 
 
-/* ==========================================================
-   PLACEHOLDERS DOS MODAIS
-========================================================== */
+/* PREPARAÇÃO PARA A HOME V4
 
-const modalTexts = {
+Na próxima versão vamos substituir esta lógica por:
 
-    modalSobrevivencia:
-        "Durante milhares de anos, o movimento era indispensável para sobreviver.",
+1. Tela teaser.
+2. Primeiro clique remove o teaser.
+3. Cada botão revela apenas um pedaço da imagem.
+4. Os pedaços permanecem visíveis.
+5. Bloqueio curto entre cliques.
+6. Ao revelar os oito pedaços:
+   - brilho sobre a imagem;
+   - união dos blocos;
+   - animação das palavras;
+   - título final;
+   - entrada no Portal.
+*/
 
-    modalTrabalho:
-        "O trabalho físico moldou a evolução da humanidade.",
-
-    modalConstrucao:
-        "Construções monumentais foram erguidas pela força do corpo humano.",
-
-    modalIndustria:
-        "A tecnologia reduziu o esforço físico e aumentou a produtividade.",
-
-    modalTreino:
-        "O exercício passou a ser uma escolha consciente para manter a saúde.",
-
-    modalRotina:
-        "A rotina moderna trouxe conforto, mas reduziu nossa movimentação.",
-
-    modalTempo:
-        "Hoje, um dos maiores desafios é encontrar tempo para cuidar do corpo.",
-
-    modalWBEMS:
-        "O WB-EMS representa um novo capítulo da evolução do movimento humano."
-
-};
-
-console.log("Portal EMS Brasil carregado com sucesso.");
+console.log("Portal EMS Brasil V3 carregado.");
